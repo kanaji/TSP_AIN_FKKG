@@ -1,4 +1,8 @@
-import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import numpy as np
+import operator
+import pandas as pd
+import random
 
 
 class City:
@@ -41,9 +45,11 @@ class Fitness:
             self.fitness = 1 / float(self.routeDistance())
         return self.fitness
 
+
 def createRoute(cityList):
     route = random.sample(cityList, len(cityList))
     return route
+
 
 def initialPopulation(popSize, cityList):
     population = []
@@ -52,11 +58,12 @@ def initialPopulation(popSize, cityList):
         population.append(createRoute(cityList))
     return population
 
+
 def rankRoutes(population):
     fitnessResults = {}
-    for i in range(0,len(population)):
+    for i in range(0, len(population)):
         fitnessResults[i] = Fitness(population[i]).routeFitness()
-    return sorted(fitnessResults.items(), key = operator.itemgetter(1), reverse = True)
+    return sorted(fitnessResults.items(), key=operator.itemgetter(1), reverse=True)
 
 
 def selection(popRanked, eliteSize):
@@ -74,6 +81,7 @@ def selection(popRanked, eliteSize):
                 selectionResults.append(popRanked[i][0])
                 break
     return selectionResults
+
 
 def matingPool(population, selectionResults):
     matingpool = []
@@ -138,6 +146,7 @@ def mutatePopulation(population, mutationRate):
         mutatedPop.append(mutatedInd)
     return mutatedPop
 
+
 def nextGeneration(currentGen, eliteSize, mutationRate):
     popRanked = rankRoutes(currentGen)
     selectionResults = selection(popRanked, eliteSize)
@@ -158,6 +167,7 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     bestRouteIndex = rankRoutes(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
     return bestRoute
+
 
 def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations):
     pop = initialPopulation(popSize, population)
