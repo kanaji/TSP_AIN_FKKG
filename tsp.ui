@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
-    <height>936</height>
+    <width>1215</width>
+    <height>945</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>TSP</string>
   </property>
-  <widget class="QGraphicsView" name="graphicsView">
+  <widget class="QGraphicsView" name="tsp_plot_graph">
    <property name="geometry">
     <rect>
      <x>530</x>
@@ -23,7 +23,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QTableWidget" name="tableWidget">
+  <widget class="QTableWidget" name="data_graph_plot">
    <property name="geometry">
     <rect>
      <x>530</x>
@@ -33,7 +33,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="load_button">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -59,7 +59,7 @@
     <enum>Qt::Vertical</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="run_button">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -132,12 +132,12 @@
      <string>Loaded File:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_10">
+   <widget class="QLabel" name="file_label">
     <property name="geometry">
      <rect>
       <x>190</x>
       <y>50</y>
-      <width>61</width>
+      <width>271</width>
       <height>16</height>
      </rect>
     </property>
@@ -145,7 +145,7 @@
      <string>name.tsp</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_2">
+   <widget class="QCheckBox" name="optimal_path_checkbox">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -171,7 +171,7 @@
      <string>Optimal path</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_5">
+   <widget class="QLineEdit" name="optimal_path_text">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -232,7 +232,7 @@
    <property name="midLineWidth">
     <number>1</number>
    </property>
-   <widget class="QSpinBox" name="spinBox_2">
+   <widget class="QSpinBox" name="number_of_generations">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -255,7 +255,7 @@
      <string>Number of Generations</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox">
+   <widget class="QSpinBox" name="population_size">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -304,7 +304,7 @@
      <string>3-opt</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox_3">
+   <widget class="QSpinBox" name="generation_start_hc">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -314,7 +314,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_7">
+   <widget class="QCheckBox" name="hillclimbing_checkbox">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -340,7 +340,7 @@
      <string>2-opt</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_6">
+   <widget class="QCheckBox" name="elitist_checkbox">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -440,7 +440,7 @@
    <property name="midLineWidth">
     <number>1</number>
    </property>
-   <widget class="QSpinBox" name="spinBox_4">
+   <widget class="QSpinBox" name="tournament_size">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -515,7 +515,7 @@
      <string>Crossover probability</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="doubleSpinBox">
+   <widget class="QDoubleSpinBox" name="crossover_probability">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -622,7 +622,7 @@
      <string>Mutation probability</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+   <widget class="QDoubleSpinBox" name="mutation_probability">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -633,7 +633,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="clock_seed_check">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -659,7 +659,7 @@
     <string>Seed</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="seed_value">
    <property name="geometry">
     <rect>
      <x>50</x>
@@ -685,7 +685,7 @@
     <string>Number of experiments</string>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spinBox_5">
+  <widget class="QSpinBox" name="number_of_experiments">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -713,7 +713,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="lineEdit_4"/>
+     <widget class="QLineEdit" name="generation_number_graph"/>
     </item>
     <item>
      <widget class="QLabel" name="label_21">
@@ -723,7 +723,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="lineEdit_2"/>
+     <widget class="QLineEdit" name="best_tour_graph"/>
     </item>
     <item>
      <widget class="QLabel" name="label_20">
@@ -733,7 +733,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="lineEdit_3"/>
+     <widget class="QLineEdit" name="optimal_tour_graph"/>
     </item>
    </layout>
   </widget>
@@ -741,14 +741,14 @@
   <zorder>frame_4</zorder>
   <zorder>frame_3</zorder>
   <zorder>frame_2</zorder>
-  <zorder>graphicsView</zorder>
-  <zorder>tableWidget</zorder>
+  <zorder>tsp_plot_graph</zorder>
+  <zorder>data_graph_plot</zorder>
   <zorder>line</zorder>
-  <zorder>pushButton_2</zorder>
+  <zorder>run_button</zorder>
   <zorder>label_7</zorder>
   <zorder>label_8</zorder>
   <zorder>frame</zorder>
-  <zorder>pushButton</zorder>
+  <zorder>load_button</zorder>
   <zorder>label_11</zorder>
   <zorder>label_13</zorder>
   <zorder>label_2</zorder>
@@ -759,11 +759,11 @@
   <zorder>label_14</zorder>
   <zorder>horizontalLayoutWidget_4</zorder>
   <zorder>label_16</zorder>
-  <zorder>checkBox</zorder>
+  <zorder>clock_seed_check</zorder>
   <zorder>label_18</zorder>
-  <zorder>lineEdit</zorder>
+  <zorder>seed_value</zorder>
   <zorder>label_19</zorder>
-  <zorder>spinBox_5</zorder>
+  <zorder>number_of_experiments</zorder>
   <zorder>horizontalLayoutWidget</zorder>
  </widget>
  <resources/>
