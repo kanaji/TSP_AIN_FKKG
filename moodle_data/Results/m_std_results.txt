@@ -1,0 +1,19 @@
+# TSP instance: berlin52.tsp
+# pop_size 100
+# num_of_gener 150
+# ...
+#.....
+# elitist strat: OFF
+# HC: 2-opt
+#.....
+# num of experiments: 10
+# seed: -2568904
+# gen  av_best_tour std_av_best_tour  AV_av_tour std_AV_av_tour  
+0      17667        0.15              49676      0.11
+1      16789        0.10              43009      0.09
+2      12223        0.09              39076      0.12
+3  
+4 ..........
+5 
+6 
+............

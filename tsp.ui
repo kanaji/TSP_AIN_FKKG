@@ -6,33 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1215</width>
-    <height>945</height>
+    <width>1211</width>
+    <height>936</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>TSP</string>
   </property>
-  <widget class="QGraphicsView" name="tsp_plot_graph">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>30</y>
-     <width>671</width>
-     <height>421</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QTableWidget" name="data_graph_plot">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>530</y>
-     <width>671</width>
-     <height>401</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QPushButton" name="load_button">
    <property name="geometry">
     <rect>
@@ -737,12 +717,30 @@
     </item>
    </layout>
   </widget>
+  <widget class="graph_widget" name="tsp_graph_widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>30</y>
+     <width>671</width>
+     <height>411</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="graph_widget" name="data_graph_widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>529</x>
+     <y>529</y>
+     <width>671</width>
+     <height>391</height>
+    </rect>
+   </property>
+  </widget>
   <zorder>frame_5</zorder>
   <zorder>frame_4</zorder>
   <zorder>frame_3</zorder>
   <zorder>frame_2</zorder>
-  <zorder>tsp_plot_graph</zorder>
-  <zorder>data_graph_plot</zorder>
   <zorder>line</zorder>
   <zorder>run_button</zorder>
   <zorder>label_7</zorder>
@@ -765,7 +763,17 @@
   <zorder>label_19</zorder>
   <zorder>number_of_experiments</zorder>
   <zorder>horizontalLayoutWidget</zorder>
+  <zorder>tsp_graph_widget</zorder>
+  <zorder>data_graph_widget</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>graph_widget</class>
+   <extends>QWidget</extends>
+   <header>graph_widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

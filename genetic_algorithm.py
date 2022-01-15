@@ -66,6 +66,14 @@ def rankRoutes(population):
     return sorted(fitnessResults.items(), key=operator.itemgetter(1), reverse=True)
 
 
+def averageRoute(population):
+    fitness_average = 0
+    for i in range(0, len(population)):
+        fitness_average += Fitness(population[i]).routeFitness()
+    fitness_average = fitness_average / len(population)
+    return fitness_average
+
+
 def selection(popRanked, eliteSize):
     selectionResults = []
     df = pd.DataFrame(np.array(popRanked), columns=["Index", "Fitness"])
@@ -174,11 +182,12 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
 
+    average = []
+    average.append(1 / averageRoute(pop))
+
     for i in range(0, generations):
         pop = nextGeneration(pop, eliteSize, mutationRate)
         progress.append(1 / rankRoutes(pop)[0][1])
+        average.append(1 / averageRoute(pop))
 
-    plt.plot(progress)
-    plt.ylabel('Distance')
-    plt.xlabel('Generation')
-    plt.show()
+    return progress, average
