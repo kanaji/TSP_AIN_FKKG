@@ -164,21 +164,11 @@ def nextGeneration(currentGen, eliteSize, mutationRate):
     return nextGeneration
 
 
-def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
+def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size, crossover_type,
+                     crossover_prob, mutation_type, mutation_prob, seed):
     pop = initialPopulation(popSize, population)
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
 
-    for i in range(0, generations):
-        pop = nextGeneration(pop, eliteSize, mutationRate)
-
-    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
-    bestRouteIndex = rankRoutes(pop)[0][0]
-    bestRoute = pop[bestRouteIndex]
-    return bestRoute
-
-
-def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations):
-    pop = initialPopulation(popSize, population)
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
 
@@ -186,8 +176,11 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
     average.append(1 / averageRoute(pop))
 
     for i in range(0, generations):
-        pop = nextGeneration(pop, eliteSize, mutationRate)
+        pop = nextGeneration(pop, eliteSize, mutation_prob)
         progress.append(1 / rankRoutes(pop)[0][1])
         average.append(1 / averageRoute(pop))
 
-    return progress, average
+    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
+    bestRouteIndex = rankRoutes(pop)[0][0]
+    bestRoute = pop[bestRouteIndex]
+    return bestRoute, progress, average

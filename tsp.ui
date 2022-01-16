@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
-    <height>936</height>
+    <width>1215</width>
+    <height>926</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,10 +40,13 @@
    </property>
   </widget>
   <widget class="QPushButton" name="run_button">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>900</y>
+     <y>890</y>
      <width>471</width>
      <height>28</height>
     </rect>
@@ -221,6 +224,12 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>200</number>
+    </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
@@ -243,6 +252,15 @@
       <width>121</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>200</number>
+    </property>
+    <property name="value">
+     <number>1</number>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -271,7 +289,10 @@
      <string>Generation to start HC</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_4">
+   <widget class="QRadioButton" name="opt_3_radio">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>149</x>
@@ -285,6 +306,9 @@
     </property>
    </widget>
    <widget class="QSpinBox" name="generation_start_hc">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -307,7 +331,10 @@
      <string>Hillclimbing (HC)</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_5">
+   <widget class="QRadioButton" name="opt_2_radio">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>11</x>
@@ -318,6 +345,9 @@
     </property>
     <property name="text">
      <string>2-opt</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QCheckBox" name="elitist_checkbox">
@@ -331,6 +361,19 @@
     </property>
     <property name="text">
      <string>Elitist Strategy</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="elite_spinbox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>80</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
     </property>
    </widget>
   </widget>
@@ -368,20 +411,29 @@
     <rect>
      <x>20</x>
      <y>460</y>
-     <width>271</width>
+     <width>451</width>
      <height>22</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QRadioButton" name="radioButton_2">
+     <widget class="QRadioButton" name="tournament_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Tournament</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton">
+     <widget class="QRadioButton" name="my_selection_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>My Selection - Rank</string>
       </property>
@@ -421,6 +473,9 @@
     <number>1</number>
    </property>
    <widget class="QSpinBox" name="tournament_size">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -430,33 +485,58 @@
      </rect>
     </property>
    </widget>
+   <widget class="QCheckBox" name="selection_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_3">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>570</y>
-     <width>431</width>
+     <width>451</width>
      <height>51</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <widget class="QRadioButton" name="radioButton_7">
+     <widget class="QRadioButton" name="ox_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>OX</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_3">
+     <widget class="QRadioButton" name="cx_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>CX</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_8">
+     <widget class="QRadioButton" name="my_crossover_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>My Crossover - SCX</string>
       </property>
@@ -470,7 +550,7 @@
      <x>10</x>
      <y>540</y>
      <width>471</width>
-     <height>131</height>
+     <height>121</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -486,7 +566,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>100</y>
+      <y>90</y>
       <width>121</width>
       <height>16</height>
      </rect>
@@ -496,13 +576,38 @@
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="crossover_probability">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>100</y>
+      <y>90</y>
       <width>62</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.010000000000000</double>
+    </property>
+    <property name="value">
+     <double>0.010000000000000</double>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="crossover_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>10</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
@@ -526,28 +631,40 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>710</y>
-     <width>431</width>
+     <y>700</y>
+     <width>451</width>
      <height>51</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
-     <widget class="QRadioButton" name="radioButton_9">
+     <widget class="QRadioButton" name="swap_2_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>2-swap</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_12">
+     <widget class="QRadioButton" name="inversion_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Inversion</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_13">
+     <widget class="QRadioButton" name="my_mutation_radio">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>My Mutation - Last but not least</string>
       </property>
@@ -559,7 +676,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>690</y>
+     <y>680</y>
      <width>61</width>
      <height>16</height>
     </rect>
@@ -575,7 +692,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>680</y>
+     <y>670</y>
      <width>471</width>
      <height>131</height>
     </rect>
@@ -603,6 +720,9 @@
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="mutation_probability">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -611,13 +731,35 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.010000000000000</double>
+    </property>
+    <property name="value">
+     <double>0.010000000000000</double>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="mutation_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QCheckBox" name="clock_seed_check">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>820</y>
+     <y>810</y>
      <width>91</width>
      <height>20</height>
     </rect>
@@ -630,7 +772,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>840</y>
+     <y>830</y>
      <width>55</width>
      <height>16</height>
     </rect>
@@ -640,10 +782,13 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="seed_value">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>840</y>
+     <y>830</y>
      <width>113</width>
      <height>22</height>
     </rect>
@@ -656,7 +801,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>870</y>
+     <y>860</y>
      <width>141</width>
      <height>16</height>
     </rect>
@@ -669,10 +814,16 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>870</y>
+     <y>860</y>
      <width>42</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>100</number>
    </property>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
@@ -737,6 +888,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QLabel" name="error_label">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>830</y>
+     <width>221</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
   <zorder>frame_5</zorder>
   <zorder>frame_4</zorder>
   <zorder>frame_3</zorder>
@@ -765,6 +929,7 @@
   <zorder>horizontalLayoutWidget</zorder>
   <zorder>tsp_graph_widget</zorder>
   <zorder>data_graph_widget</zorder>
+  <zorder>error_label</zorder>
  </widget>
  <customwidgets>
   <customwidget>
