@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>TSP</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QPushButton" name="load_button">
    <property name="geometry">
     <rect>
@@ -51,6 +54,12 @@
      <height>28</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
     <string>Run/Multirun</string>
    </property>
@@ -64,6 +73,12 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
     <string>TSP Graph</string>
    </property>
@@ -76,6 +91,12 @@
      <width>81</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Data Graph</string>
@@ -174,11 +195,18 @@
   <widget class="QLabel" name="label_11">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>190</x>
      <y>10</y>
-     <width>91</width>
+     <width>171</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>TSP INSTANCE</string>
@@ -375,6 +403,12 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>200</number>
+    </property>
    </widget>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -395,9 +429,15 @@
     <rect>
      <x>20</x>
      <y>440</y>
-     <width>61</width>
+     <width>71</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="frameShape">
     <enum>QFrame::Box</enum>
@@ -419,7 +459,7 @@
     <item>
      <widget class="QRadioButton" name="tournament_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>Tournament</string>
@@ -432,7 +472,7 @@
     <item>
      <widget class="QRadioButton" name="my_selection_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>My Selection - Rank</string>
@@ -474,7 +514,7 @@
    </property>
    <widget class="QSpinBox" name="tournament_size">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -484,18 +524,11 @@
       <height>21</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QCheckBox" name="selection_checkbox">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>10</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
+    <property name="minimum">
+     <number>2</number>
     </property>
-    <property name="text">
-     <string/>
+    <property name="maximum">
+     <number>200</number>
     </property>
    </widget>
   </widget>
@@ -512,7 +545,7 @@
     <item>
      <widget class="QRadioButton" name="ox_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>OX</string>
@@ -525,7 +558,7 @@
     <item>
      <widget class="QRadioButton" name="cx_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>CX</string>
@@ -535,7 +568,7 @@
     <item>
      <widget class="QRadioButton" name="my_crossover_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>My Crossover - SCX</string>
@@ -577,7 +610,7 @@
    </widget>
    <widget class="QDoubleSpinBox" name="crossover_probability">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -597,28 +630,21 @@
      <double>0.010000000000000</double>
     </property>
    </widget>
-   <widget class="QCheckBox" name="crossover_checkbox">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>10</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
   </widget>
   <widget class="QLabel" name="label_14">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>550</y>
-     <width>71</width>
+     <width>81</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="frameShape">
     <enum>QFrame::Box</enum>
@@ -677,9 +703,15 @@
     <rect>
      <x>20</x>
      <y>680</y>
-     <width>61</width>
+     <width>71</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="frameShape">
     <enum>QFrame::Box</enum>
@@ -721,7 +753,7 @@
    </widget>
    <widget class="QDoubleSpinBox" name="mutation_probability">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -739,19 +771,6 @@
     </property>
     <property name="value">
      <double>0.010000000000000</double>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="mutation_checkbox">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>10</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
   </widget>

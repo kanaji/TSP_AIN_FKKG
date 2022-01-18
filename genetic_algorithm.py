@@ -58,6 +58,14 @@ def initialPopulation(popSize, cityList):
         population.append(createRoute(cityList))
     return population
 
+def toDistanceList (population):
+    routeList = {}
+    for i in range(0, len(population)):
+        currentRoute = Fitness(population[i])
+        currentRoute.routeFitness()
+        routeList[i] = currentRoute
+    return sorted(routeList, key=lambda x: x.distance, reverse=True)
+
 
 def rankRoutes(population):
     fitnessResults = {}
@@ -89,6 +97,11 @@ def selection(popRanked, eliteSize):
                 selectionResults.append(popRanked[i][0])
                 break
     return selectionResults
+
+def tournament_selection(popRanked, size):
+    parents = random.choices(popRanked, k=size)
+    parents = sorted(parents, reverse=True)
+    return parents[0], parents[1]
 
 
 def matingPool(population, selectionResults):
@@ -155,12 +168,13 @@ def mutatePopulation(population, mutationRate):
     return mutatedPop
 
 
-def nextGeneration(currentGen, eliteSize, mutationRate):
+def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size, crossover_type,
+                     crossover_prob, mutation_type, mutation_prob, seed):
     popRanked = rankRoutes(currentGen)
     selectionResults = selection(popRanked, eliteSize)
     matingpool = matingPool(currentGen, selectionResults)
     children = breedPopulation(matingpool, eliteSize)
-    nextGeneration = mutatePopulation(children, mutationRate)
+    nextGeneration = mutatePopulation(children, mutation_prob)
     return nextGeneration
 
 
@@ -169,6 +183,9 @@ def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type
     pop = initialPopulation(popSize, population)
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
 
+    routes = []
+    routes.append(pop[rankRoutes(pop)[0][0]])
+
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
 
@@ -176,11 +193,13 @@ def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type
     average.append(1 / averageRoute(pop))
 
     for i in range(0, generations):
-        pop = nextGeneration(pop, eliteSize, mutation_prob)
+        pop = nextGeneration(pop, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size, crossover_type,
+                     crossover_prob, mutation_type, mutation_prob, seed)
+        routes.append(pop[rankRoutes(pop)[0][0]])
         progress.append(1 / rankRoutes(pop)[0][1])
         average.append(1 / averageRoute(pop))
 
     print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
     bestRouteIndex = rankRoutes(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
-    return bestRoute, progress, average
+    return bestRoute, progress, average, routes

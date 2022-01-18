@@ -1,0 +1,20 @@
+# TSP INSTANCE: berlin52.tsp 
+# Population size: 15 
+# Number of generations: 5 
+# Elitist strategy: ON 
+# Number of elites: 1 
+# Hillclimbing: OFF 
+# Selection type: Tournament 
+# Tournament size: 2 
+# Crossover type: OX 
+# Crossover probability: 0.01 
+# Mutation type: 2-swap 
+# Mutation probability: 0.01 
+# Number of experiments: 3 
+# GEN 	 av_best_tour 	 std_av_best_tour 	 AV_av_tour 	 std_AV_av_tour
+0 	 27985.137082723824 	 232.1348889386718 	 29634.744383273395 	 418.35159070975726
+1 	 26355.609913084943 	 1037.260085120489 	 29203.48559097634 	 443.54879083880553
+2 	 27472.639374926424 	 1064.3992066619496 	 29286.264105883212 	 796.1253468025474
+3 	 27184.64845741016 	 882.3108210371383 	 29324.301792670045 	 1144.667985540174
+4 	 27013.20061083375 	 676.7718740058798 	 29464.32470587647 	 634.5600195240846
+
