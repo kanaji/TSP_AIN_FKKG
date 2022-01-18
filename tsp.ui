@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1215</width>
-    <height>926</height>
+    <width>1211</width>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -282,13 +282,13 @@
      </rect>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>2</number>
     </property>
     <property name="maximum">
      <number>200</number>
     </property>
     <property name="value">
-     <number>1</number>
+     <number>2</number>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -309,7 +309,7 @@
      <rect>
       <x>10</x>
       <y>160</y>
-      <width>131</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
@@ -486,7 +486,7 @@
     <rect>
      <x>20</x>
      <y>490</y>
-     <width>101</width>
+     <width>111</width>
      <height>16</height>
     </rect>
    </property>
@@ -518,7 +518,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>130</x>
       <y>60</y>
       <width>51</width>
       <height>21</height>
@@ -600,7 +600,7 @@
      <rect>
       <x>10</x>
       <y>90</y>
-      <width>121</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
@@ -614,7 +614,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>150</x>
       <y>90</y>
       <width>62</width>
       <height>22</height>
@@ -666,7 +666,7 @@
     <item>
      <widget class="QRadioButton" name="swap_2_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>2-swap</string>
@@ -679,7 +679,7 @@
     <item>
      <widget class="QRadioButton" name="inversion_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>Inversion</string>
@@ -689,7 +689,7 @@
     <item>
      <widget class="QRadioButton" name="my_mutation_radio">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>My Mutation - Last but not least</string>
@@ -832,7 +832,7 @@
   <widget class="QSpinBox" name="number_of_experiments">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>170</x>
      <y>860</y>
      <width>42</width>
      <height>22</height>

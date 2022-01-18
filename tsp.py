@@ -1,5 +1,6 @@
 import sys
 from statistics import stdev
+import qdarkstyle
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog
 
@@ -31,6 +32,9 @@ class Ui(QtWidgets.QDialog):
             lambda: self.enable_on_check(self.hillclimbing_checkbox, self.generation_start_hc))
         self.clock_seed_check.clicked.connect(lambda: self.enable_on_check(self.clock_seed_check, self.seed_value))
 
+        self.my_selection_radio.clicked.connect(lambda: self.disable_on_check(self.my_selection_radio, self.tournament_size))
+        self.tournament_radio.clicked.connect(lambda: self.enable_on_check(self.tournament_radio, self.tournament_size))
+
         self.load_button.clicked.connect(self.open_file)
         self.run_button.clicked.connect(self.run_tsp)
 
@@ -39,6 +43,12 @@ class Ui(QtWidgets.QDialog):
             to_be_enabled.setEnabled(True)
         else:
             to_be_enabled.setEnabled(False)
+
+    def disable_on_check(self, check, to_be_disabled):
+        if check.isChecked():
+            to_be_disabled.setEnabled(False)
+        else:
+            to_be_disabled.setEnabled(True)
 
     def open_file(self):
         options = QFileDialog.Options()
@@ -201,6 +211,7 @@ class Ui(QtWidgets.QDialog):
                 self.best_tour_graph.setText(f"{best_fitness[self.generations - 1]}")
 
                 self.results(city_route, best_fitness, average_fitness, routes)
+                self.tour_file(city_route)
             else:
                 experiments = []
                 for i in range(self.num_of_exp):
@@ -317,7 +328,6 @@ class Ui(QtWidgets.QDialog):
 
     def m_found_solutions(self, experiments):
         f = self.tsp_data("m_found_solutions")
-        # TODO: for every experiment, print their best tour and route sequence
         f.write("# Experiment \t best_tour \t best_tour_sequence  \n")
 
         i = 0
@@ -328,7 +338,23 @@ class Ui(QtWidgets.QDialog):
 
         f.close()
 
+    def tour_file(self, route):
+        file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
+        f = open(file_name, "w")
+
+        f.write(f"NAME: {file_name} \n")
+        f.write("TYPE: TOUR \n")
+        f.write(f"DIMENSION: {len(self.city_list)} \n")
+        f.write("TOUR_SECTION \n")
+        for city in route:
+            f.write(f"{self.city_list.index(city)} \n")
+
+        f.close()
+
 
 app = QtWidgets.QApplication(sys.argv)
+
+app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+# app.setStyleSheet(open('dark_breeze.qss').read())
 window = Ui()
 app.exec_()
