@@ -3,7 +3,7 @@ import numpy as np
 import operator
 import pandas as pd
 import random
-
+import hill_climbing as hc
 
 class City:
     def __init__(self, x, y):
@@ -58,6 +58,14 @@ def initialPopulation(popSize, cityList):
         population.append(createRoute(cityList))
     return population
 
+#def toDistanceList (population):
+   # routeList = {}
+   # for i in range(0, len(population)):
+  #      currentRoute = Fitness(population[i])
+ #       currentRoute.routeFitness()
+  #      routeList[i] = currentRoute
+ #   return sorted(routeList, key=lambda x: x.distance, reverse=True)
+
 
 def rankRoutes(population):
     fitnessResults = {}
@@ -74,7 +82,7 @@ def averageRoute(population):
     return fitness_average
 
 
-def selection(popRanked, eliteSize):
+def selection(popRanked, eliteSize, selectionType, size):
     selectionResults = []
     df = pd.DataFrame(np.array(popRanked), columns=["Index", "Fitness"])
     df['cum_sum'] = df.Fitness.cumsum()
@@ -82,13 +90,23 @@ def selection(popRanked, eliteSize):
 
     for i in range(0, eliteSize):
         selectionResults.append(popRanked[i][0])
-    for i in range(0, len(popRanked) - eliteSize):
-        pick = 100 * random.random()
-        for i in range(0, len(popRanked)):
-            if pick <= df.iat[i, 3]:
-                selectionResults.append(popRanked[i][0])
-                break
+    if (selectionType == 'tournament'):
+        for i in range(0, len(popRanked) - eliteSize):
+            winner = tournamentSelection(popRanked,size)
+            selectionResults.append(winner[0])
+    if (selectionType == 'rank'):
+        for i in range(0, len(popRanked) - eliteSize):
+            pick = 100 * random.random()
+            for i in range(0, len(popRanked)):
+                if pick <= df.iat[i, 3]:
+                    selectionResults.append(popRanked[i][0])
+                    break
     return selectionResults
+
+def tournamentSelection(popRanked, size):
+    parents = random.choices(popRanked, k=size)
+    parents = sorted(parents, reverse=True)
+    return parents[0]
 
 
 def matingPool(population, selectionResults):
@@ -155,19 +173,37 @@ def mutatePopulation(population, mutationRate):
     return mutatedPop
 
 
-def nextGeneration(currentGen, eliteSize, mutationRate):
+def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size, crossover_type,
+                     crossover_prob, mutation_type, mutation_prob, seed, current_gen):
     popRanked = rankRoutes(currentGen)
-    selectionResults = selection(popRanked, eliteSize)
+    selectionResults = selection(popRanked, eliteSize, selection_type, selection_size)
     matingpool = matingPool(currentGen, selectionResults)
     children = breedPopulation(matingpool, eliteSize)
-    nextGeneration = mutatePopulation(children, mutationRate)
+    mutatedPopulation = mutatePopulation(children, mutation_prob)
+    print(hillclimb_generation)
+    nextGeneration = hillClimbing(mutatedPopulation, hillclimb_type, hillclimb_generation, current_gen)
     return nextGeneration
 
+def hillClimbing (population, hillclimb_type, hillclimb_generation, current_gen):
+    print('hc')
+    if (hillclimb_generation >= ++current_gen):
+        sortedPop = sorted (population, lambda x: Fitness(x).routeFitness, Reverse = True)
+        if (hillclimb_type=='2opt'):
+            best = hc.two_opt(sortedPop[0])
+            for route in population:
+                if (sortedPop[0] == route):
+                    route = best
+        if (hillclimb_type=='3opt'):
+            x=1
+    return population
 
 def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size, crossover_type,
                      crossover_prob, mutation_type, mutation_prob, seed):
     pop = initialPopulation(popSize, population)
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
+
+   # routes = []
+    #routes.append(toDistanceList(pop)[0].route)
 
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
@@ -176,7 +212,9 @@ def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type
     average.append(1 / averageRoute(pop))
 
     for i in range(0, generations):
-        pop = nextGeneration(pop, eliteSize, mutation_prob)
+        pop = nextGeneration(pop, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size, crossover_type,
+                     crossover_prob, mutation_type, mutation_prob, seed, i)
+   #     routes.append(toDistanceList(pop)[i].route)
         progress.append(1 / rankRoutes(pop)[0][1])
         average.append(1 / averageRoute(pop))
 
