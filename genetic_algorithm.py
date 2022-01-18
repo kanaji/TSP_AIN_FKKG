@@ -187,8 +187,10 @@ def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, 
 def hillClimbing (population, hillclimb_type, hillclimb_generation, current_gen):
     print('hc')
     if (hillclimb_generation >= ++current_gen):
-        sortedPop = sorted (population, lambda x: Fitness(x).routeFitness, Reverse = True)
-        if (hillclimb_type=='2opt'):
+        sortedPop = population
+        sortedPop.sort(key=lambda x: Fitness(x).routeFitness(), reverse = True)
+        print (hillclimb_type)
+        if (hillclimb_type == '2opt'):
             best = hc.two_opt(sortedPop[0])
             for route in population:
                 if (sortedPop[0] == route):
