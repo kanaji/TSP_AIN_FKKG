@@ -190,7 +190,10 @@ def hillClimbing(population, hillclimb_type, hillclimb_generation, current_gen):
                 if sortedPop[0] == route:
                     route = best
         if hillclimb_type == '3-opt':
-            x = 1
+            best = hc.three_opt(sortedPop[0])
+            for route in population:
+                if sortedPop[0] == route:
+                    route = best
     return population
 
 
