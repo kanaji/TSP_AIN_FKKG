@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,6 +15,9 @@
   </property>
   <property name="windowTitle">
    <string>TSP</string>
+  </property>
+  <property name="whatsThis">
+   <string/>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -150,6 +156,9 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="optimal_path_checkbox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -163,6 +172,9 @@
     </property>
    </widget>
    <widget class="QLabel" name="label_12">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -177,7 +189,7 @@
    </widget>
    <widget class="QLineEdit" name="optimal_path_text">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -863,7 +875,11 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="generation_number_graph"/>
+     <widget class="QLineEdit" name="generation_number_graph">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_21">
@@ -873,7 +889,11 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="best_tour_graph"/>
+     <widget class="QLineEdit" name="best_tour_graph">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_20">
@@ -883,7 +903,11 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="optimal_tour_graph"/>
+     <widget class="QLineEdit" name="optimal_tour_graph">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

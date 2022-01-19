@@ -47,16 +47,17 @@ class Fitness:
         return self.fitness
 
 
-def createRoute(cityList):
+def createRoute(cityList, seed):
+    random.seed(seed)
     route = random.sample(cityList, len(cityList))
     return route
 
 
-def initialPopulation(popSize, cityList):
+def initialPopulation(popSize, cityList, seed):
     population = []
 
     for i in range(0, popSize):
-        population.append(createRoute(cityList))
+        population.append(createRoute(cityList, seed))
     return population
 
 
@@ -75,17 +76,17 @@ def averageRoute(population):
     return fitness_average
 
 
-def selection(popRanked, eliteSize, selectionType, size):
+def selection(popRanked, eliteSize, selectionType, size, seed):
     selectionResults = []
     df = pd.DataFrame(np.array(popRanked), columns=["Index", "Fitness"])
     df['cum_sum'] = df.Fitness.cumsum()
     df['cum_perc'] = 100 * df.cum_sum / df.Fitness.sum()
-
+    random.seed(seed)
     for i in range(0, eliteSize):
         selectionResults.append(popRanked[i][0])
     if selectionType == 'Tournament':
         for i in range(0, len(popRanked) - eliteSize):
-            winner = tournamentSelection(popRanked, size)
+            winner = tournamentSelection(popRanked, size, seed)
             selectionResults.append(winner[0])
     if selectionType == 'Rank':
         for i in range(0, len(popRanked) - eliteSize):
@@ -97,7 +98,8 @@ def selection(popRanked, eliteSize, selectionType, size):
     return selectionResults
 
 
-def tournamentSelection(popRanked, size):
+def tournamentSelection(popRanked, size, seed):
+    random.seed(seed)
     parents = random.choices(popRanked, k=size)
     parents = sorted(parents, reverse=True)
     return parents[0]
@@ -111,11 +113,11 @@ def matingPool(population, selectionResults):
     return matingpool
 
 
-def breed(parent1, parent2):
+def breed(parent1, parent2, seed):
     child = []
     childP1 = []
     childP2 = []
-
+    random.seed(seed)
     geneA = int(random.random() * len(parent1))
     geneB = int(random.random() * len(parent1))
 
@@ -131,23 +133,25 @@ def breed(parent1, parent2):
     return child
 
 
-def breedPopulation(matingpool, eliteSize):
+def breedPopulation(matingpool, eliteSize, seed):
     children = []
     length = len(matingpool) - eliteSize
+    random.seed(seed)
     pool = random.sample(matingpool, len(matingpool))
 
     for i in range(0, eliteSize):
         children.append(matingpool[i])
 
     for i in range(0, length):
-        child = breed(pool[i], pool[len(matingpool) - i - 1])
+        child = breed(pool[i], pool[len(matingpool) - i - 1], seed)
         children.append(child)
     return children
 
 
-def mutate(individual, mutationRate):
+def mutate_2_swap(individual, mutationRate, seed):
+    random.seed(seed)
     for swapped in range(len(individual)):
-        if (random.random() < mutationRate):
+        if random.random() < mutationRate:
             swapWith = int(random.random() * len(individual))
 
             city1 = individual[swapped]
@@ -158,12 +162,45 @@ def mutate(individual, mutationRate):
     return individual
 
 
-def mutatePopulation(population, mutationRate):
-    mutatedPop = []
+def mutate_inversion(individual, mutationRate, seed):
+    random.seed(seed)
+    for city_1 in range(len(individual)):
+        if random.random() < mutationRate:
+            city_2 = int(random.random() * len(individual))
 
-    for ind in range(0, len(population)):
-        mutatedInd = mutate(population[ind], mutationRate)
-        mutatedPop.append(mutatedInd)
+            if city_1 < city_2:
+                begin = city_1
+                end = city_2
+            elif city_1 > city_2:
+                begin = city_2
+                end = city_1
+
+            individual[begin:end] = individual[begin:end][::-1]
+    return individual
+
+
+def mutate_last_but_not_least(individual, mutationRate, seed):
+    random.seed(seed)
+    for city_1 in range(len(individual)):
+        if random.random() < mutationRate:
+            individual[0], individual[-1] = individual[-1], individual[0]
+    return individual
+
+
+def mutatePopulation(population, mutation_type, mutationRate, seed):
+    mutatedPop = []
+    if mutation_type == "2-swap":
+        for ind in range(0, len(population)):
+            mutatedInd = mutate_2_swap(population[ind], mutationRate, seed)
+            mutatedPop.append(mutatedInd)
+    elif mutation_type == "Inversion":
+        for ind in range(0, len(population)):
+            mutatedInd = mutate_inversion(population[ind], mutationRate, seed)
+            mutatedPop.append(mutatedInd)
+    elif mutation_type == "last_but_not_least":
+        for ind in range(0, len(population)):
+            mutatedInd = mutate_last_but_not_least(population[ind], mutationRate, seed)
+            mutatedPop.append(mutatedInd)
     return mutatedPop
 
 
@@ -171,10 +208,10 @@ def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, 
                    crossover_type,
                    crossover_prob, mutation_type, mutation_prob, seed, current_gen):
     popRanked = rankRoutes(currentGen)
-    selectionResults = selection(popRanked, eliteSize, selection_type, selection_size)
+    selectionResults = selection(popRanked, eliteSize, selection_type, selection_size, seed)
     matingpool = matingPool(currentGen, selectionResults)
-    children = breedPopulation(matingpool, eliteSize)
-    mutatedPopulation = mutatePopulation(children, mutation_prob)
+    children = breedPopulation(matingpool, eliteSize, seed)
+    mutatedPopulation = mutatePopulation(children, mutation_type, mutation_prob, seed)
     nextGeneration = hillClimbing(mutatedPopulation, hillclimb_type, hillclimb_generation, current_gen)
 
     return nextGeneration
@@ -190,14 +227,17 @@ def hillClimbing(population, hillclimb_type, hillclimb_generation, current_gen):
                 if sortedPop[0] == route:
                     route = best
         if hillclimb_type == '3-opt':
-            x = 1
+            best = hc.three_opt(sortedPop[0])
+            for route in population:
+                if sortedPop[0] == route:
+                    route = best
     return population
 
 
 def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type, hillclimb_generation, selection_type,
                      selection_size, crossover_type,
                      crossover_prob, mutation_type, mutation_prob, seed):
-    pop = initialPopulation(popSize, population)
+    pop = initialPopulation(popSize, population, seed)
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
 
     routes = []

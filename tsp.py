@@ -1,6 +1,8 @@
+import os
 import sys
 from statistics import stdev
 import qdarkstyle
+import glob
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog
 
@@ -74,10 +76,54 @@ class Ui(QtWidgets.QDialog):
         self.tsp_graph_widget.canvas.axes.scatter(x, y)
         self.tsp_graph_widget.canvas.draw()
 
+    def optimal_tour_value(self, cities_indexes):
+        opt_tour = 0
+        for i in range(len(cities_indexes)):
+            if i != len(cities_indexes) - 1:
+                city_1 = self.city_list[int(cities_indexes[i]) - 1]
+                city_2 = self.city_list[int(cities_indexes[i + 1]) - 1]
+                opt_tour += city_1.distance(city_2)
+            else:
+                city_1 = self.city_list[int(cities_indexes[i]) - 1]
+                city_2 = self.city_list[int(cities_indexes[0]) - 1]
+                opt_tour += city_1.distance(city_2)
+        return opt_tour
+
+    def optimal_tour(self):
+        file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
+        files = os.listdir("moodle_data/TSP_Optimal_solutions")
+        if file_name in files:
+            file = open("moodle_data/TSP_Optimal_solutions/" + file_name)
+            file = file.readlines()
+            dimension = 0
+            for line in file:
+                if 'DIMENSION' in line:
+                    dimension = int(line[line.rfind(" "):])
+
+            if file[-1] == "EOF\n" or file[-1] == "\n" or file[-1] == "EOF":
+                file.pop()
+                if file[-1] == "EOF\n" or file[-1] == "EOF":
+                    file.pop()
+
+            file = file[-dimension:]
+
+            cities = []
+
+            for city_number in file:
+                cities.append(city_number)
+
+            cities[-1] = cities[0]
+            opt_tour = self.optimal_tour_value(cities)
+        else:
+            opt_tour = ""
+
+        return opt_tour
+
     def fitness_graph(self, best_fitness, average_fitness):
         self.data_graph_widget.canvas.axes.clear()
         self.data_graph_widget.canvas.axes.set_ylabel('Tour Length')
         self.data_graph_widget.canvas.axes.set_xlabel('Generation')
+        self.data_graph_widget.canvas.axes.xaxis.get_major_locator().set_params(integer=True)
         self.data_graph_widget.canvas.axes.plot(best_fitness, label='Best in generation', marker='o')
         self.data_graph_widget.canvas.axes.plot(average_fitness, label='Average in generation', marker='s')
         self.data_graph_widget.canvas.axes.legend(loc='upper right')
@@ -148,9 +194,9 @@ class Ui(QtWidgets.QDialog):
         self.mutation_prob = self.mutation_probability.value()
 
         if self.clock_seed_check.isChecked():
-            self.seed = self.seed_value.value()
+            self.seed = self.seed_value.text()
         else:
-            self.seed = "none"
+            self.seed = None
 
         self.num_of_exp = self.number_of_experiments.value()
 
@@ -186,6 +232,7 @@ class Ui(QtWidgets.QDialog):
     def run_tsp(self):
         self.error_label.setText("")
         answer = self.read_values()
+        self.optimal_tour_graph.setText(str(self.optimal_tour()))
 
         if answer == True:
             if self.num_of_exp == 1:
@@ -207,8 +254,11 @@ class Ui(QtWidgets.QDialog):
 
                 self.fitness_graph(best_fitness, average_fitness)
 
-                self.generation_number_graph.setText(f"{self.generations}")
-                self.best_tour_graph.setText(f"{best_fitness[self.generations - 1]}")
+                best_fit = min(best_fitness)
+                best_fit = best_fitness.index(best_fit)
+
+                self.generation_number_graph.setText(f"{best_fit}")
+                self.best_tour_graph.setText(f"{best_fitness[best_fit]}")
 
                 self.results(city_route, best_fitness, average_fitness, routes)
                 self.tour_file(city_route)
@@ -229,6 +279,16 @@ class Ui(QtWidgets.QDialog):
                                                                                          mutation_prob=self.mutation_prob,
                                                                                          seed=self.seed)
                     experiments.append(Experiment(city_route, best_fitness, average_fitness, routes))
+
+                    self.route_graph(city_route)
+
+                    self.fitness_graph(best_fitness, average_fitness)
+
+                    best_fit = min(best_fitness)
+                    best_fit = best_fitness.index(best_fit)
+
+                    self.generation_number_graph.setText(f"{best_fit}")
+                    self.best_tour_graph.setText(f"{best_fitness[best_fit]}")
 
                 self.m_results(experiments)
                 self.m_std_results(experiments)
@@ -355,6 +415,5 @@ class Ui(QtWidgets.QDialog):
 app = QtWidgets.QApplication(sys.argv)
 
 app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-# app.setStyleSheet(open('dark_breeze.qss').read())
 window = Ui()
 app.exec_()
