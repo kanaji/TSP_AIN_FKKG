@@ -261,7 +261,6 @@ class Ui(QtWidgets.QDialog):
                 self.best_tour_graph.setText(f"{best_fitness[best_fit]}")
 
                 self.results(city_route, best_fitness, average_fitness, routes)
-                self.tour_file(city_route)
             else:
                 experiments = []
                 for i in range(self.num_of_exp):
@@ -395,19 +394,6 @@ class Ui(QtWidgets.QDialog):
             index = exp.best_routes.index(exp.best_route)
             f.write(f"{i} \t {exp.best_fitness[index]} \t {self.tsp_city_sequence(exp.best_route)} \n")
             i += 1
-
-        f.close()
-
-    def tour_file(self, route):
-        file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
-        f = open(file_name, "w")
-
-        f.write(f"NAME: {file_name} \n")
-        f.write("TYPE: TOUR \n")
-        f.write(f"DIMENSION: {len(self.city_list)} \n")
-        f.write("TOUR_SECTION \n")
-        for city in route:
-            f.write(f"{self.city_list.index(city)} \n")
 
         f.close()
 
