@@ -9,6 +9,73 @@ from PyQt5.QtWidgets import QFileDialog
 from genetic_algorithm import geneticAlgorithm, City
 
 
+def results_pyplot_file(generations, highest_fitness, lowest_fitness):
+    f = open("results/results.plt", 'w')
+
+    f.write("set style data lines \n")
+    f.write(f"set xrange [0:{generations}] \n")
+    f.write(f"set yrange [{lowest_fitness - 1}: {highest_fitness + 2000}] \n")
+    f.write(f"set xlabel 'Generations' \n")
+    f.write(f"set ylabel 'Tour length' \n")
+    f.write(f"set title 'Results' \n")
+    f.write(f"plot 'results.txt' using 1:2 with lines lc 7 lw 2 title 'Best tour',\\\n")
+    f.write(f"'results.txt' using 1:3 with lines lc 3 lw 2 title 'Average tour' \n")
+
+    f.close()
+
+
+def m_std_results_pyplot_file(generations, highest_fitness, lowest_fitness):
+    f = open("results/m_std_results.plt", 'w')
+
+    f.write("set style data lines \n")
+    f.write(f"set xrange [0:{generations}] \n")
+    f.write(f"set yrange [{lowest_fitness - 1}: {highest_fitness + 2000}] \n")
+    f.write(f"set xlabel 'Generations' \n")
+    f.write(f"set ylabel 'Tour length' \n")
+    f.write(f"set title 'Multirun with std results' \n")
+    f.write(f"plot 'm_std_results.txt' using 1:2 with lines lc 7 lw 2 title 'Best tour',\\\n")
+    f.write(f"'m_std_results.txt' using 1:2:3 with yerrorbars lc 7 title 'Std. of best tour',\\\n")
+    f.write(f"'m_std_results.txt' using 1:4 with lines lc 3 lw 2 title 'Average tour',\\\n")
+    f.write(f"'m_std_results.txt' using 1:4:5 with yerrorbars lc 3 title 'Std. of average tour'\n")
+
+    f.close()
+
+
+def m_results_pyplot_file(experiments, generations, highest_fitness, lowest_fitness):
+    f = open("results/m_results.plt", 'w')
+
+    f.write("set style data lines \n")
+    f.write(f"set xrange [0:{generations}] \n")
+    f.write(f"set yrange [{lowest_fitness - 1}: {highest_fitness + 2000}] \n")
+    f.write(f"set xlabel 'Generations' \n")
+    f.write(f"set ylabel 'Tour length' \n")
+    f.write(f"set title 'Multirun results' \n")
+    f.write(f"plot 'm_results.txt' i 0 using 1:2 with lines lc 0 lw 2 title 'Best tour 0',\\\n")
+    f.write(f"'m_results.txt' i 0 using 1:3 with lines dt 3 lc 0 lw 2 title 'Average tour 0',\\\n")
+    for i in range(1, experiments):
+        f.write(f"'m_results.txt' i {i} using 1:2 with lines lc {i} lw 2 title 'Best tour {i}',\\\n")
+        f.write(f"'m_results.txt' i {i} using 1:3 with lines dt 3 lc {i} lw 2 title 'Average tour {i}',\\\n")
+
+    f.close()
+
+
+def m_found_solutions_pyplot_file(experiments, highest_fitness, lowest_fitness):
+    f = open("results/m_found_solutions.plt", 'w')
+
+    f.write("set style data lines \n")
+    f.write(f"set xrange [-1:{experiments}] \n")
+    f.write(f"set yrange [{lowest_fitness - 100}: {highest_fitness + 100}] \n")
+    f.write(f"set xlabel 'Experiments' \n")
+    f.write(f"set ylabel 'Tour length' \n")
+    f.write(f"set xtics 1 \n")
+    f.write(f"set title 'Multirun found solutions results' \n")
+    f.write(f"set boxwidth 0.6 relative \n")
+    f.write(f"set style fill solid \n")
+    f.write(f"plot 'm_found_solutions.txt' using 1:2 with boxes lc 7 lw 1 title 'Best tour'\n")
+
+    f.close()
+
+
 class Experiment:
     def __init__(self, best_route, best_fitness, average_fitness, best_routes):
         self.best_route = best_route
@@ -24,6 +91,7 @@ class Ui(QtWidgets.QDialog):
         self.show()
         self.city_list = []
         self.file_label.setText("")
+        self.runned = False
 
         self.elitist_checkbox.clicked.connect(lambda: self.enable_on_check(self.elitist_checkbox, self.elite_spinbox))
         self.hillclimbing_checkbox.clicked.connect(
@@ -34,11 +102,20 @@ class Ui(QtWidgets.QDialog):
             lambda: self.enable_on_check(self.hillclimbing_checkbox, self.generation_start_hc))
         self.clock_seed_check.clicked.connect(lambda: self.enable_on_check(self.clock_seed_check, self.seed_value))
 
-        self.my_selection_radio.clicked.connect(lambda: self.disable_on_check(self.my_selection_radio, self.tournament_size))
+        self.my_selection_radio.clicked.connect(
+            lambda: self.disable_on_check(self.my_selection_radio, self.tournament_size))
         self.tournament_radio.clicked.connect(lambda: self.enable_on_check(self.tournament_radio, self.tournament_size))
+
+        self.optimal_path_checkbox.clicked.connect(self.enable_opt_tour)
 
         self.load_button.clicked.connect(self.open_file)
         self.run_button.clicked.connect(self.run_tsp)
+
+    def enable_opt_tour(self):
+        file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
+        files = os.listdir("moodle_data/TSP_Optimal_solutions")
+        if file_name in files:
+            self.optimal_tour(file_name)
 
     def enable_on_check(self, check, to_be_enabled):
         if check.isChecked():
@@ -59,11 +136,21 @@ class Ui(QtWidgets.QDialog):
                                                        "Miasta (*.tsp)",
                                                        options=options)
         if self.fileName:
+            self.optimal_path_checkbox.setEnabled(True)
             self.tsp_name = self.fileName[self.fileName.rfind("/") + 1:]
             self.file_label.setText(self.tsp_name)
             self.read_file()
             self.read_cities()
-            self.city_graph()
+            self.runned = False
+
+            file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
+            files = os.listdir("moodle_data/TSP_Optimal_solutions")
+            if file_name in files:
+                self.optimal_tour(file_name)
+            else:
+                self.optimal_tour_graph.setText("")
+                self.opt_cities = None
+                self.city_graph()
 
     def city_graph(self):
         x = []
@@ -78,7 +165,9 @@ class Ui(QtWidgets.QDialog):
 
     def optimal_tour_value(self, cities_indexes):
         opt_tour = 0
+        cities = []
         for i in range(len(cities_indexes)):
+            cities.append(self.city_list[int(cities_indexes[i]) - 1])
             if i != len(cities_indexes) - 1:
                 city_1 = self.city_list[int(cities_indexes[i]) - 1]
                 city_2 = self.city_list[int(cities_indexes[i + 1]) - 1]
@@ -87,37 +176,36 @@ class Ui(QtWidgets.QDialog):
                 city_1 = self.city_list[int(cities_indexes[i]) - 1]
                 city_2 = self.city_list[int(cities_indexes[0]) - 1]
                 opt_tour += city_1.distance(city_2)
-        return opt_tour
+        return opt_tour, cities
 
-    def optimal_tour(self):
-        file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
-        files = os.listdir("moodle_data/TSP_Optimal_solutions")
-        if file_name in files:
-            file = open("moodle_data/TSP_Optimal_solutions/" + file_name)
-            file = file.readlines()
-            dimension = 0
-            for line in file:
-                if 'DIMENSION' in line:
-                    dimension = int(line[line.rfind(" "):])
+    def optimal_tour(self, file_name):
+        file = open("moodle_data/TSP_Optimal_solutions/" + file_name)
+        file = file.readlines()
+        dimension = 0
+        for line in file:
+            if 'DIMENSION' in line:
+                dimension = int(line[line.rfind(" "):])
 
-            if file[-1] == "EOF\n" or file[-1] == "\n" or file[-1] == "EOF":
+        if file[-1] == "EOF\n" or file[-1] == "\n" or file[-1] == "EOF":
+            file.pop()
+            if file[-1] == "EOF\n" or file[-1] == "EOF":
                 file.pop()
-                if file[-1] == "EOF\n" or file[-1] == "EOF":
-                    file.pop()
 
-            file = file[-dimension:]
+        file = file[-dimension:]
 
-            cities = []
+        cities = []
 
-            for city_number in file:
-                cities.append(city_number)
+        for city_number in file:
+            cities.append(city_number)
 
-            cities[-1] = cities[0]
-            opt_tour = self.optimal_tour_value(cities)
+        cities[-1] = cities[0]
+        opt_tour, self.opt_cities = self.optimal_tour_value(cities)
+        self.optimal_tour_graph.setText(str(int(opt_tour)))
+
+        if self.optimal_path_checkbox.isChecked():
+            self.route_graph(self.opt_cities)
         else:
-            opt_tour = ""
-
-        return opt_tour
+            self.city_graph()
 
     def fitness_graph(self, best_fitness, average_fitness):
         self.data_graph_widget.canvas.axes.clear()
@@ -129,7 +217,7 @@ class Ui(QtWidgets.QDialog):
         self.data_graph_widget.canvas.axes.legend(loc='upper right')
         self.data_graph_widget.canvas.draw()
 
-    def route_graph(self, city_route):
+    def route_graph(self, city_route, optimal_route=None):
         x = []
         y = []
         for city in city_route:
@@ -139,9 +227,19 @@ class Ui(QtWidgets.QDialog):
         x.append(x[0])
         y.append(y[0])
 
+        if optimal_route is not None:
+            x_opt = []
+            y_opt = []
+            for city in optimal_route:
+                x_opt.append(city.x)
+                y_opt.append(city.y)
+
         self.tsp_graph_widget.canvas.axes.clear()
         self.tsp_graph_widget.canvas.axes.scatter(x, y)
-        self.tsp_graph_widget.canvas.axes.plot(x, y)
+        if optimal_route is not None:
+            self.tsp_graph_widget.canvas.axes.plot(x_opt, y_opt, label='Optimal route')
+        self.tsp_graph_widget.canvas.axes.plot(x, y, label='Best GA')
+        self.tsp_graph_widget.canvas.axes.legend(loc='upper right')
         self.tsp_graph_widget.canvas.draw()
 
     def read_values(self):
@@ -232,9 +330,9 @@ class Ui(QtWidgets.QDialog):
     def run_tsp(self):
         self.error_label.setText("")
         answer = self.read_values()
-        self.optimal_tour_graph.setText(str(self.optimal_tour()))
 
         if answer == True:
+            self.optimal_path_checkbox.setEnabled(False)
             if self.num_of_exp == 1:
                 city_route, best_fitness, average_fitness, routes = geneticAlgorithm(population=self.city_list,
                                                                                      popSize=self.popSize,
@@ -250,7 +348,7 @@ class Ui(QtWidgets.QDialog):
                                                                                      mutation_prob=self.mutation_prob,
                                                                                      seed=self.seed)
 
-                self.route_graph(city_route)
+                self.route_graph(city_route, self.opt_cities)
 
                 self.fitness_graph(best_fitness, average_fitness)
 
@@ -258,11 +356,15 @@ class Ui(QtWidgets.QDialog):
                 best_fit = best_fitness.index(best_fit)
 
                 self.generation_number_graph.setText(f"{best_fit}")
-                self.best_tour_graph.setText(f"{best_fitness[best_fit]}")
+                self.best_tour_graph.setText(f"{int(best_fitness[best_fit])}")
 
                 self.results(city_route, best_fitness, average_fitness, routes)
+                results_pyplot_file(self.generations, max(average_fitness), min(best_fitness))
             else:
                 experiments = []
+                self.high_fit = 0
+                self.low_fit = 1000000
+                best_route = [0, 0]
                 for i in range(self.num_of_exp):
                     city_route, best_fitness, average_fitness, routes = geneticAlgorithm(population=self.city_list,
                                                                                          popSize=self.popSize,
@@ -279,19 +381,47 @@ class Ui(QtWidgets.QDialog):
                                                                                          seed=self.seed)
                     experiments.append(Experiment(city_route, best_fitness, average_fitness, routes))
 
-                    self.route_graph(city_route)
+                    if self.high_fit < max(average_fitness):
+                        self.high_fit = max(average_fitness)
 
-                    self.fitness_graph(best_fitness, average_fitness)
+                    if self.low_fit > min(best_fitness):
+                        self.low_fit = min(best_fitness)
 
-                    best_fit = min(best_fitness)
-                    best_fit = best_fitness.index(best_fit)
+                    if i == 0:
+                        best_fit = min(best_fitness)
+                        best_route[0] = best_fit
+                        best_fit = best_fitness.index(best_fit)
+                        best_route[1] = best_fit
 
-                    self.generation_number_graph.setText(f"{best_fit}")
-                    self.best_tour_graph.setText(f"{best_fitness[best_fit]}")
+                        self.route_graph(city_route, self.opt_cities)
+                        self.fitness_graph(best_fitness, average_fitness)
 
+                        self.generation_number_graph.setText(f"{best_route[1]}/{i}")
+                        self.best_tour_graph.setText(f"{best_route[0]}")
+                    else:
+                        best_fit = min(best_fitness)
+                        if best_fit < best_route[0]:
+                            best_route[0] = best_fit
+                            best_route[1] = best_fitness.index(best_route[0])
+                            self.route_graph(city_route, self.opt_cities)
+                            self.fitness_graph(best_fitness, average_fitness)
+                        best_fit = best_fitness.index(best_fit)
+
+                        self.generation_number_graph.setText(f"{int(best_route[1])}/{i}")
+                        self.best_tour_graph.setText(f"{int(best_route[0])}")
+
+                # SAFE TO FILE
                 self.m_results(experiments)
                 self.m_std_results(experiments)
                 self.m_found_solutions(experiments)
+                m_std_results_pyplot_file(self.generations, self.high_fit, self.low_fit)
+                m_results_pyplot_file(len(experiments), self.generations, self.high_fit, self.low_fit)
+
+                fitnesses = []
+                for x in experiments:
+                    fitnesses.append(min(x.best_fitness))
+
+                m_found_solutions_pyplot_file(len(experiments), max(fitnesses), min(fitnesses))
         else:
             self.error_label.setStyleSheet('color: red')
             self.error_label.setText(answer)
@@ -304,7 +434,7 @@ class Ui(QtWidgets.QDialog):
         return city_sequence[:-1]
 
     def tsp_data(self, filename):
-        f = open(f"{filename}.txt", "w")
+        f = open(f"results/{filename}.txt", "w")
 
         f.write(f"# TSP INSTANCE: {self.tsp_name} \n")
         f.write(f"# Population size: {self.popSize} \n")
@@ -355,7 +485,7 @@ class Ui(QtWidgets.QDialog):
                 av_tour = exp.average_fitness[i]
                 best_tour_sequence = self.tsp_city_sequence(exp.best_routes[i])
                 f.write(f"{i} \t {best_tour} \t {av_tour} \t {best_tour_sequence}\n")
-            f.write("\n")
+            f.write("\n\n")
 
         f.close()
 
@@ -391,8 +521,7 @@ class Ui(QtWidgets.QDialog):
 
         i = 0
         for exp in experiments:
-            index = exp.best_routes.index(exp.best_route)
-            f.write(f"{i} \t {exp.best_fitness[index]} \t {self.tsp_city_sequence(exp.best_route)} \n")
+            f.write(f"{i} \t {min(exp.best_fitness)} \t {self.tsp_city_sequence(exp.best_route)} \n")
             i += 1
 
         f.close()

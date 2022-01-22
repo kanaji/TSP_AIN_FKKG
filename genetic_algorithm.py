@@ -113,11 +113,19 @@ def matingPool(population, selectionResults):
     return matingpool
 
 
-def breed(parent1, parent2, seed):
+def breed(parent1, parent2, seed, crossover_type, crossover_prob):
     child = []
     childP1 = []
     childP2 = []
     random.seed(seed)
+    if random.random() < crossover_prob:
+        if crossover_type == "OX":
+            print("TEST OX")
+        elif crossover_type == "CX":
+            print("TEST CX")
+        elif crossover_type == "SCX":
+            print("TEST SCX")
+
     geneA = int(random.random() * len(parent1))
     geneB = int(random.random() * len(parent1))
 
@@ -133,7 +141,7 @@ def breed(parent1, parent2, seed):
     return child
 
 
-def breedPopulation(matingpool, eliteSize, seed):
+def breedPopulation(matingpool, eliteSize, seed, crossover_type, crossover_prob):
     children = []
     length = len(matingpool) - eliteSize
     random.seed(seed)
@@ -143,7 +151,7 @@ def breedPopulation(matingpool, eliteSize, seed):
         children.append(matingpool[i])
 
     for i in range(0, length):
-        child = breed(pool[i], pool[len(matingpool) - i - 1], seed)
+        child = breed(pool[i], pool[len(matingpool) - i - 1], seed, crossover_type, crossover_prob)
         children.append(child)
     return children
 
@@ -174,6 +182,8 @@ def mutate_inversion(individual, mutationRate, seed):
             elif city_1 > city_2:
                 begin = city_2
                 end = city_1
+            else:
+                continue
 
             individual[begin:end] = individual[begin:end][::-1]
     return individual
@@ -210,7 +220,7 @@ def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, 
     popRanked = rankRoutes(currentGen)
     selectionResults = selection(popRanked, eliteSize, selection_type, selection_size, seed)
     matingpool = matingPool(currentGen, selectionResults)
-    children = breedPopulation(matingpool, eliteSize, seed)
+    children = breedPopulation(matingpool, eliteSize, seed, crossover_type, crossover_prob)
     mutatedPopulation = mutatePopulation(children, mutation_type, mutation_prob, seed)
     nextGeneration = hillClimbing(mutatedPopulation, hillclimb_type, hillclimb_generation, current_gen)
 

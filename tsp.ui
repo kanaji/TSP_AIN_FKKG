@@ -162,45 +162,13 @@
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>70</y>
-      <width>131</width>
+      <y>90</y>
+      <width>291</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Show optimal path</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_12">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>100</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Optimal path</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="optimal_path_text">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>100</y>
-      <width>113</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
+     <string>Show optimal path if available</string>
     </property>
    </widget>
   </widget>
@@ -270,6 +238,9 @@
     <property name="maximum">
      <number>200</number>
     </property>
+    <property name="value">
+     <number>100</number>
+    </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
@@ -297,10 +268,10 @@
      <number>2</number>
     </property>
     <property name="maximum">
-     <number>200</number>
+     <number>10000</number>
     </property>
     <property name="value">
-     <number>2</number>
+     <number>100</number>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -400,7 +371,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Elitist Strategy</string>
+     <string>Elite Size</string>
     </property>
    </widget>
    <widget class="QSpinBox" name="elite_spinbox">
@@ -791,12 +762,12 @@
     <rect>
      <x>10</x>
      <y>810</y>
-     <width>91</width>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Clock seed</string>
+    <string>Use own Seed</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_18">
@@ -870,7 +841,7 @@
     <item>
      <widget class="QLabel" name="label_22">
       <property name="text">
-       <string>Generation</string>
+       <string>Generation/Experiment</string>
       </property>
      </widget>
     </item>
