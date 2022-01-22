@@ -114,31 +114,44 @@ def matingPool(population, selectionResults):
 
 
 def breed(parent1, parent2, seed, crossover_type, crossover_prob):
-    child = []
-    childP1 = []
-    childP2 = []
     random.seed(seed)
+    # TODO: ADD CROSSOVERS
     if random.random() < crossover_prob:
         if crossover_type == "OX":
-            print("TEST OX")
+            # print("TEST OX")
+            if random.random() <= 0.5:
+                return parent1
+            else:
+                return parent2
         elif crossover_type == "CX":
-            print("TEST CX")
+            # print("TEST CX")
+            if random.random() <= 0.5:
+                return parent1
+            else:
+                return parent2
         elif crossover_type == "SCX":
-            print("TEST SCX")
+            # print("TEST SCX")
+            child = []
+            childP1 = []
+            childP2 = []
+            geneA = int(random.random() * len(parent1))
+            geneB = int(random.random() * len(parent1))
 
-    geneA = int(random.random() * len(parent1))
-    geneB = int(random.random() * len(parent1))
+            startGene = min(geneA, geneB)
+            endGene = max(geneA, geneB)
 
-    startGene = min(geneA, geneB)
-    endGene = max(geneA, geneB)
+            for i in range(startGene, endGene):
+                childP1.append(parent1[i])
 
-    for i in range(startGene, endGene):
-        childP1.append(parent1[i])
+            childP2 = [item for item in parent2 if item not in childP1]
 
-    childP2 = [item for item in parent2 if item not in childP1]
-
-    child = childP1 + childP2
-    return child
+            child = childP1 + childP2
+            return child
+    else:
+        if random.random() <= 0.5:
+            return parent1
+        else:
+            return parent2
 
 
 def breedPopulation(matingpool, eliteSize, seed, crossover_type, crossover_prob):
