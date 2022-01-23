@@ -1,6 +1,6 @@
 set style data lines 
 set xrange [0:100] 
-set yrange [9460.639958832891: 32229.457001916624] 
+set yrange [9872.352655508303: 31945.201433629052] 
 set xlabel 'Generations' 
 set ylabel 'Tour length' 
 set title 'Results' 

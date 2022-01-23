@@ -113,24 +113,90 @@ def matingPool(population, selectionResults):
     return matingpool
 
 
+def cx_crossover(ind1, ind2):
+    chrom_length = len(ind1)
+    p1_copy = ind1.copy()
+    p2_copy = ind2.copy()
+    swap = True
+    count = 0
+    pos = 0
+    child_one = [City(-1, -1)] * chrom_length
+    child_two = [City(-1, -1)] * chrom_length
+    while True:
+        if count > chrom_length:
+            break
+        for i in range(chrom_length):
+            if child_one[i].x == -1 and child_one[i].y == -1:
+                pos = i
+                break
+
+        if swap:
+            while True:
+                child_one[pos] = ind1[pos]
+                count += 1
+                pos = ind2.index(ind1[pos])
+                if p1_copy[pos].x == -1 and p1_copy[pos].y == -1:
+                    swap = False
+                    break
+                p1_copy[pos] = City(-1, -1)
+        else:
+            while True:
+                child_one[pos] = ind2[pos]
+                count += 1
+                pos = ind1.index(ind2[pos])
+                if p2_copy[pos].x == -1 and p2_copy[pos].y == -1:
+                    swap = True
+                    break
+                p2_copy[pos] = City(-1, -1)
+
+    for i in range(chrom_length):  # for the second child
+        if child_one[i] == ind1[i]:
+            child_two[i] = ind2[i]
+        else:
+            child_two[i] = ind1[i]
+
+    for i in range(chrom_length):  # Special mode
+        if child_one[i].x == -1 and child_one[i].y == -1:
+            # it means that the ith gene from p1 has been already transfered
+            if p1_copy[i].x == -1 and p1_copy[i].y == -1:
+                child_one[i] = ind2[i]
+            else:
+                child_one[i] = ind1[i]
+    return child_one
+
+
+def ox_crossover(parent1, parent2, seed):
+    random.seed(seed)
+    size = len(parent1)
+    size_2 = len(parent2)
+    a = int(random.random() * size)
+    b = int(random.random() * size)
+    if a > b:
+        a, b = b, a
+
+    par_1 = parent1.copy()
+    par_2 = parent2.copy()
+
+    child = [0] * size
+    child[a:b] = par_1[a:b]
+
+    for city in child[a:b]:
+        par_2.pop(par_2.index(city))
+
+    child[b:size] = par_2[-(size - b):]
+    child[0:a] = par_2[:a]
+
+    return child
+
+
 def breed(parent1, parent2, seed, crossover_type, crossover_prob):
     random.seed(seed)
-    # TODO: ADD CROSSOVERS
     if random.random() < crossover_prob:
         if crossover_type == "OX":
-            # print("TEST OX")
-            if random.random() <= 0.5:
-                return parent1
-            else:
-                return parent2
+            return ox_crossover(parent1, parent2, seed)
         elif crossover_type == "CX":
-            # print("TEST CX")
-            if random.random() <= 0.5:
-                return parent1
-            else:
-                return parent2
+            return cx_crossover(parent1, parent2)
         elif crossover_type == "SCX":
-            # print("TEST SCX")
             child = []
             childP1 = []
             childP2 = []

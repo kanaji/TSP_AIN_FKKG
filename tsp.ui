@@ -554,7 +554,7 @@
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>My Crossover - SCX</string>
+       <string>My Crossover - 2 point crossover</string>
       </property>
      </widget>
     </item>
