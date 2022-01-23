@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QFileDialog
 from genetic_algorithm import geneticAlgorithm, City
 
 
-def results_pyplot_file(generations, highest_fitness, lowest_fitness):
+def results_pyplot_file(generations, highest_fitness, lowest_fitness, tsp_name):
     f = open("results/results.plt", 'w')
 
     f.write("set style data lines \n")
@@ -17,14 +17,14 @@ def results_pyplot_file(generations, highest_fitness, lowest_fitness):
     f.write(f"set yrange [{lowest_fitness - 1}: {highest_fitness + 2000}] \n")
     f.write(f"set xlabel 'Generations' \n")
     f.write(f"set ylabel 'Tour length' \n")
-    f.write(f"set title 'Results' \n")
+    f.write(f"set title 'Results for {tsp_name}' \n")
     f.write(f"plot 'results.txt' using 1:2 with lines lc 7 lw 2 title 'Best tour',\\\n")
     f.write(f"'results.txt' using 1:3 with lines lc 3 lw 2 title 'Average tour' \n")
 
     f.close()
 
 
-def m_std_results_pyplot_file(generations, highest_fitness, lowest_fitness):
+def m_std_results_pyplot_file(generations, highest_fitness, lowest_fitness, tsp_name):
     f = open("results/m_std_results.plt", 'w')
 
     f.write("set style data lines \n")
@@ -32,7 +32,7 @@ def m_std_results_pyplot_file(generations, highest_fitness, lowest_fitness):
     f.write(f"set yrange [{lowest_fitness - 1}: {highest_fitness + 2000}] \n")
     f.write(f"set xlabel 'Generations' \n")
     f.write(f"set ylabel 'Tour length' \n")
-    f.write(f"set title 'Multirun with std results' \n")
+    f.write(f"set title 'Multirun with std results for {tsp_name}' \n")
     f.write(f"plot 'm_std_results.txt' using 1:2 with lines lc 7 lw 2 title 'Best tour',\\\n")
     f.write(f"'m_std_results.txt' using 1:2:3 with yerrorbars lc 7 title 'Std. of best tour',\\\n")
     f.write(f"'m_std_results.txt' using 1:4 with lines lc 3 lw 2 title 'Average tour',\\\n")
@@ -41,7 +41,7 @@ def m_std_results_pyplot_file(generations, highest_fitness, lowest_fitness):
     f.close()
 
 
-def m_results_pyplot_file(experiments, generations, highest_fitness, lowest_fitness):
+def m_results_pyplot_file(experiments, generations, highest_fitness, lowest_fitness, tsp_name):
     f = open("results/m_results.plt", 'w')
 
     f.write("set style data lines \n")
@@ -49,7 +49,7 @@ def m_results_pyplot_file(experiments, generations, highest_fitness, lowest_fitn
     f.write(f"set yrange [{lowest_fitness - 1}: {highest_fitness + 2000}] \n")
     f.write(f"set xlabel 'Generations' \n")
     f.write(f"set ylabel 'Tour length' \n")
-    f.write(f"set title 'Multirun results' \n")
+    f.write(f"set title 'Multirun results for {tsp_name}' \n")
     f.write(f"plot 'm_results.txt' i 0 using 1:2 with lines lc 0 lw 2 title 'Best tour 0',\\\n")
     f.write(f"'m_results.txt' i 0 using 1:3 with lines dt 3 lc 0 lw 2 title 'Average tour 0',\\\n")
     for i in range(1, experiments):
@@ -59,7 +59,7 @@ def m_results_pyplot_file(experiments, generations, highest_fitness, lowest_fitn
     f.close()
 
 
-def m_found_solutions_pyplot_file(experiments, highest_fitness, lowest_fitness):
+def m_found_solutions_pyplot_file(experiments, highest_fitness, lowest_fitness, tsp_name):
     f = open("results/m_found_solutions.plt", 'w')
 
     f.write("set style data lines \n")
@@ -68,7 +68,7 @@ def m_found_solutions_pyplot_file(experiments, highest_fitness, lowest_fitness):
     f.write(f"set xlabel 'Experiments' \n")
     f.write(f"set ylabel 'Tour length' \n")
     f.write(f"set xtics 1 \n")
-    f.write(f"set title 'Multirun found solutions results' \n")
+    f.write(f"set title 'Multirun found solutions results for {tsp_name}' \n")
     f.write(f"set boxwidth 0.6 relative \n")
     f.write(f"set style fill solid \n")
     f.write(f"plot 'm_found_solutions.txt' using 1:2 with boxes lc 7 lw 1 title 'Best tour'\n")
@@ -145,10 +145,14 @@ class Ui(QtWidgets.QDialog):
 
             file_name = self.tsp_name[:self.tsp_name.rfind('.')] + ".opt.tour"
             files = os.listdir("moodle_data/TSP_Optimal_solutions")
+            self.generation_number_graph.setText("")
+            self.best_tour_graph.setText("")
+            self.data_graph_widget.canvas.axes.clear()
+            self.data_graph_widget.canvas.draw()
             if file_name in files:
                 self.optimal_tour(file_name)
             else:
-                self.optimal_tour_graph.setText("")
+                self.optimal_tour_graph.setText("Not Available")
                 self.opt_cities = None
                 self.city_graph()
 
@@ -359,7 +363,7 @@ class Ui(QtWidgets.QDialog):
                 self.best_tour_graph.setText(f"{int(best_fitness[best_fit])}")
 
                 self.results(city_route, best_fitness, average_fitness, routes)
-                results_pyplot_file(self.generations, max(average_fitness), min(best_fitness))
+                results_pyplot_file(self.generations, max(average_fitness), min(best_fitness), self.tsp_name)
             else:
                 experiments = []
                 self.high_fit = 0
@@ -414,14 +418,14 @@ class Ui(QtWidgets.QDialog):
                 self.m_results(experiments)
                 self.m_std_results(experiments)
                 self.m_found_solutions(experiments)
-                m_std_results_pyplot_file(self.generations, self.high_fit, self.low_fit)
-                m_results_pyplot_file(len(experiments), self.generations, self.high_fit, self.low_fit)
+                m_std_results_pyplot_file(self.generations, self.high_fit, self.low_fit, self.tsp_name)
+                m_results_pyplot_file(len(experiments), self.generations, self.high_fit, self.low_fit, self.tsp_name)
 
                 fitnesses = []
                 for x in experiments:
                     fitnesses.append(min(x.best_fitness))
 
-                m_found_solutions_pyplot_file(len(experiments), max(fitnesses), min(fitnesses))
+                m_found_solutions_pyplot_file(len(experiments), max(fitnesses), min(fitnesses), self.tsp_name)
         else:
             self.error_label.setStyleSheet('color: red')
             self.error_label.setText(answer)
