@@ -57,7 +57,13 @@ def initialPopulation(popSize, cityList, seed):
     population = []
 
     for i in range(0, popSize):
-        population.append(createRoute(cityList, seed))
+        while True:
+            new_route = createRoute(cityList, seed)
+            try:
+                population.index(new_route)
+            except ValueError:
+                population.append(createRoute(cityList, seed))
+                break
     return population
 
 
@@ -82,6 +88,7 @@ def selection(popRanked, eliteSize, selectionType, size, seed):
     df['cum_sum'] = df.Fitness.cumsum()
     df['cum_perc'] = 100 * df.cum_sum / df.Fitness.sum()
     random.seed(seed)
+
     for i in range(0, eliteSize):
         selectionResults.append(popRanked[i][0])
     if selectionType == 'Tournament':
@@ -276,18 +283,24 @@ def mutate_last_but_not_least(individual, mutationRate, seed):
     return individual
 
 
-def mutatePopulation(population, mutation_type, mutationRate, seed):
+def mutatePopulation(population, mutation_type, mutationRate, elitesize, seed):
     mutatedPop = []
+
+    population.sort(key=lambda x: Fitness(x).routeDistance())
+
+    for i in range(elitesize):
+        mutatedPop.append(population[i])
+
     if mutation_type == "2-swap":
-        for ind in range(0, len(population)):
+        for ind in range(elitesize, len(population)):
             mutatedInd = mutate_2_swap(population[ind], mutationRate, seed)
             mutatedPop.append(mutatedInd)
     elif mutation_type == "Inversion":
-        for ind in range(0, len(population)):
+        for ind in range(elitesize, len(population)):
             mutatedInd = mutate_inversion(population[ind], mutationRate, seed)
             mutatedPop.append(mutatedInd)
     elif mutation_type == "last_but_not_least":
-        for ind in range(0, len(population)):
+        for ind in range(elitesize, len(population)):
             mutatedInd = mutate_last_but_not_least(population[ind], mutationRate, seed)
             mutatedPop.append(mutatedInd)
     return mutatedPop
@@ -300,7 +313,7 @@ def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, 
     selectionResults = selection(popRanked, eliteSize, selection_type, selection_size, seed)
     matingpool = matingPool(currentGen, selectionResults)
     children = breedPopulation(matingpool, eliteSize, seed, crossover_type, crossover_prob)
-    mutatedPopulation = mutatePopulation(children, mutation_type, mutation_prob, seed)
+    mutatedPopulation = mutatePopulation(children, mutation_type, mutation_prob, eliteSize, seed)
     nextGeneration = hillClimbing(mutatedPopulation, hillclimb_type, hillclimb_generation, current_gen)
 
     return nextGeneration

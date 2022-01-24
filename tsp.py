@@ -93,7 +93,6 @@ class Ui(QtWidgets.QDialog):
         self.file_label.setText("")
         self.runned = False
 
-        self.elitist_checkbox.clicked.connect(lambda: self.enable_on_check(self.elitist_checkbox, self.elite_spinbox))
         self.hillclimbing_checkbox.clicked.connect(
             lambda: self.enable_on_check(self.hillclimbing_checkbox, self.opt_2_radio))
         self.hillclimbing_checkbox.clicked.connect(
@@ -251,12 +250,9 @@ class Ui(QtWidgets.QDialog):
         self.generations = self.number_of_generations.value()
         self.mutationRate = self.mutation_probability.value()
 
-        if self.elitist_checkbox.isChecked():
-            self.elite = self.elite_spinbox.value()
-            if self.elite > self.popSize:
-                return "Elite value is bigger than population"
-        else:
-            self.elite = 0
+        self.elite = self.elite_spinbox.value()
+        if self.elite > self.popSize:
+            return "Elite value is bigger than population"
 
         if self.hillclimbing_checkbox.isChecked():
             if self.opt_2_radio.isChecked():
@@ -434,7 +430,7 @@ class Ui(QtWidgets.QDialog):
         city_sequence = ""
         for city in city_route:
             index = self.city_list.index(city)
-            city_sequence += f"{index}-"
+            city_sequence += f"{index + 1}-"
         return city_sequence[:-1]
 
     def tsp_data(self, filename):
