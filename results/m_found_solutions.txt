@@ -1,17 +1,18 @@
-# TSP INSTANCE: berlin52.tsp 
-# Population size: 100 
-# Number of generations: 100 
+# TSP INSTANCE: test-ring-square36.tsp 
+# Population size: 10 
+# Number of generations: 10 
 # Elitist strategy: ON 
 # Number of elites: 1 
 # Hillclimbing: OFF 
-# Selection type: Tournament 
-# Tournament size: 2 
+# Selection type: Rank 
+# Tournament size: 0 
 # Crossover type: OX 
-# Crossover probability: 0.01 
+# Crossover probability: 0.9 
 # Mutation type: 2-swap 
 # Mutation probability: 0.01 
 # Seed: None 
-# Number of experiments: 2 
+# Number of experiments: 3 
 # Experiment 	 best_tour 	 best_tour_sequence  
-0 	 24545.44875200443 	 4-33-48-14-34-47-40-12-22-44-20-29-31-24-43-46-16-35-2-1-10-41-8-39-0-28-5-18-17-45-51-9-23-15-38-27-32-30-7-37-13-3-19-50-26-6-25-11-36-49-42-21 
-1 	 24480.168313092992 	 34-47-22-51-48-13-8-0-19-36-20-30-7-44-10-17-11-38-40-46-29-18-28-2-37-35-1-50-42-39-26-25-23-15-31-45-3-4-24-32-9-43-6-5-27-41-14-16-33-21-12-49 
+0 	 182.66292126645246 	 10-9-29-21-8-7-28-30-34-2-3-4-6-22-15-5-36-14-19-16-11-31-26-18-25-33-32-35-1-12-17-27-24-20-23-13 
+1 	 181.32820621169958 	 18-20-24-14-31-17-19-22-26-29-32-8-6-25-34-1-5-21-33-23-4-9-7-27-28-35-36-11-13-12-10-3-2-30-16-15 
+2 	 201.11497697889874 	 34-21-14-4-33-29-2-30-1-31-12-16-27-28-22-26-8-15-24-32-35-5-7-6-36-10-23-17-13-18-19-20-25-3-11-9 

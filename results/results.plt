@@ -1,6 +1,6 @@
 set style data lines 
-set xrange [0:100] 
-set yrange [82.92566899543834: 2245.11481518398] 
+set xrange [0:10] 
+set yrange [192.44331351435233: 2235.166842136211] 
 set xlabel 'Generations' 
 set ylabel 'Tour length' 
 set title 'Results for test-ring-square36.tsp' 

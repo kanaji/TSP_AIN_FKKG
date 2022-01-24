@@ -6,7 +6,7 @@ import glob
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog
 
-from genetic_algorithm import geneticAlgorithm, City
+from genetic_algorithm import geneticAlgorithm, City, Fitness, bestRoutes, averageRoute
 
 
 def results_pyplot_file(generations, highest_fitness, lowest_fitness, tsp_name):
@@ -327,6 +327,14 @@ class Ui(QtWidgets.QDialog):
             y = int(float(city[2]))
             self.city_list.append(City(x, y))
 
+    def best_and_average_route(self, pops):
+        best = []
+        average = []
+        for i in range(self.generations + 1):
+            best.append(bestRoutes(pops[i]))
+            average.append(averageRoute(pops[i]))
+        return best, average
+
     def run_tsp(self):
         self.error_label.setText("")
         answer = self.read_values()
@@ -334,19 +342,21 @@ class Ui(QtWidgets.QDialog):
         if answer == True:
             self.optimal_path_checkbox.setEnabled(False)
             if self.num_of_exp == 1:
-                city_route, best_fitness, average_fitness, routes = geneticAlgorithm(population=self.city_list,
-                                                                                     popSize=self.popSize,
-                                                                                     generations=self.generations,
-                                                                                     hillclimb_type=self.hillclimb_type,
-                                                                                     hillclimb_generation=self.hillclimb_gen_start,
-                                                                                     eliteSize=self.elite,
-                                                                                     selection_type=self.selection_type,
-                                                                                     selection_size=self.selection_size,
-                                                                                     crossover_type=self.crossover_type,
-                                                                                     crossover_prob=self.crossover_prob,
-                                                                                     mutation_type=self.mutation_type,
-                                                                                     mutation_prob=self.mutation_prob,
-                                                                                     seed=self.seed)
+                city_route, best_fitness, average_fitness, routes, pops = geneticAlgorithm(population=self.city_list,
+                                                                                           popSize=self.popSize,
+                                                                                           generations=self.generations,
+                                                                                           hillclimb_type=self.hillclimb_type,
+                                                                                           hillclimb_generation=self.hillclimb_gen_start,
+                                                                                           eliteSize=self.elite,
+                                                                                           selection_type=self.selection_type,
+                                                                                           selection_size=self.selection_size,
+                                                                                           crossover_type=self.crossover_type,
+                                                                                           crossover_prob=self.crossover_prob,
+                                                                                           mutation_type=self.mutation_type,
+                                                                                           mutation_prob=self.mutation_prob,
+                                                                                           seed=self.seed)
+
+                best_fitness, average_fitness = self.best_and_average_route(pops)
 
                 self.route_graph(city_route, self.opt_cities)
 
@@ -359,6 +369,10 @@ class Ui(QtWidgets.QDialog):
                 self.best_tour_graph.setText(f"{int(best_fitness[best_fit])}")
 
                 self.results(city_route, best_fitness, average_fitness, routes)
+
+                if self.generations <= 10:
+                    self.debug(self.generations, pops)
+
                 results_pyplot_file(self.generations, max(average_fitness), min(best_fitness), self.tsp_name)
             else:
                 experiments = []
@@ -366,20 +380,23 @@ class Ui(QtWidgets.QDialog):
                 self.low_fit = 1000000
                 best_route = [0, 0]
                 for i in range(self.num_of_exp):
-                    city_route, best_fitness, average_fitness, routes = geneticAlgorithm(population=self.city_list,
-                                                                                         popSize=self.popSize,
-                                                                                         generations=self.generations,
-                                                                                         hillclimb_type=self.hillclimb_type,
-                                                                                         hillclimb_generation=self.hillclimb_gen_start,
-                                                                                         eliteSize=self.elite,
-                                                                                         selection_type=self.selection_type,
-                                                                                         selection_size=self.selection_size,
-                                                                                         crossover_type=self.crossover_type,
-                                                                                         crossover_prob=self.crossover_prob,
-                                                                                         mutation_type=self.mutation_type,
-                                                                                         mutation_prob=self.mutation_prob,
-                                                                                         seed=self.seed)
+                    city_route, best_fitness, average_fitness, routes, pops = geneticAlgorithm(
+                        population=self.city_list,
+                        popSize=self.popSize,
+                        generations=self.generations,
+                        hillclimb_type=self.hillclimb_type,
+                        hillclimb_generation=self.hillclimb_gen_start,
+                        eliteSize=self.elite,
+                        selection_type=self.selection_type,
+                        selection_size=self.selection_size,
+                        crossover_type=self.crossover_type,
+                        crossover_prob=self.crossover_prob,
+                        mutation_type=self.mutation_type,
+                        mutation_prob=self.mutation_prob,
+                        seed=self.seed)
                     experiments.append(Experiment(city_route, best_fitness, average_fitness, routes))
+
+                    best_fitness, average_fitness = self.best_and_average_route(pops)
 
                     if self.high_fit < max(average_fitness):
                         self.high_fit = max(average_fitness)
@@ -465,7 +482,7 @@ class Ui(QtWidgets.QDialog):
         f = self.tsp_data("results")
 
         f.write("# GEN \t best_tour \t av_tour \t best_tour_sequence \n")
-        for i in range(self.generations):
+        for i in range(self.generations + 1):
             best_tour = best_fitness[i]
             av_tour = average_fitness[i]
             best_tour_sequence = self.tsp_city_sequence(routes[i])
@@ -480,7 +497,7 @@ class Ui(QtWidgets.QDialog):
             f.write(f"# Experiment {x} \n")
             x += 1
             f.write("# GEN \t best_tour \t av_tour \t best_tour_sequence \n")
-            for i in range(self.generations):
+            for i in range(self.generations + 1):
                 best_tour = exp.best_fitness[i]
                 av_tour = exp.average_fitness[i]
                 best_tour_sequence = self.tsp_city_sequence(exp.best_routes[i])
@@ -492,7 +509,7 @@ class Ui(QtWidgets.QDialog):
     def m_std_results(self, experiments):
         f = self.tsp_data("m_std_results")
         f.write("# GEN \t av_best_tour \t std_av_best_tour \t AV_av_tour \t std_AV_av_tour\n")
-        for i in range(self.generations):
+        for i in range(self.generations + 1):
             av_best_tour = 0
             std_av_best_tour = []
             AV_av_tour = 0
@@ -523,6 +540,25 @@ class Ui(QtWidgets.QDialog):
         for exp in experiments:
             f.write(f"{i} \t {min(exp.best_fitness)} \t {self.tsp_city_sequence(exp.best_route)} \n")
             i += 1
+
+        f.close()
+
+    def debug(self, generations, pops):
+        f = self.tsp_data("debug")
+
+        f.write("# GEN\\POP_NR \t tour length \n")
+        for i in range(generations + 1):
+            f.write(f"GEN {i}\n")
+            fitness_list = []
+            for x in range(len(pops) - 1):
+                tour_length = Fitness(pops[i][x]).routeDistance()
+                fitness_list.append(tour_length)
+                f.write(f"{x + 1} \t {tour_length}\n")
+            avg = 0
+            for tour in fitness_list:
+                avg += tour
+            avg = avg / len(fitness_list)
+            f.write(f"BEST TOUR: {min(fitness_list)}, AVG_TOUR: {avg}\n")
 
         f.close()
 

@@ -74,10 +74,19 @@ def rankRoutes(population):
     return sorted(fitnessResults.items(), key=operator.itemgetter(1), reverse=True)
 
 
+def bestRoutes(population):
+    best_route = 0
+    all_routes = []
+    for i in range(0, len(population)):
+        all_routes.append(Fitness(population[i]).routeDistance())
+    best_route = min(all_routes)
+    return best_route
+
+
 def averageRoute(population):
     fitness_average = 0
     for i in range(0, len(population)):
-        fitness_average += Fitness(population[i]).routeFitness()
+        fitness_average += Fitness(population[i]).routeDistance()
     fitness_average = fitness_average / len(population)
     return fitness_average
 
@@ -342,24 +351,28 @@ def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type
     pop = initialPopulation(popSize, population, seed)
     print("Initial distance: " + str(1 / rankRoutes(pop)[0][1]))
 
+    pops = []
+    pops.append(pop)
+
     routes = []
     routes.append(pop[rankRoutes(pop)[0][0]])
 
     progress = []
-    progress.append(1 / rankRoutes(pop)[0][1])
+    progress.append(bestRoutes(pop))
 
     average = []
-    average.append(1 / averageRoute(pop))
+    average.append(averageRoute(pop))
 
     for i in range(0, generations):
         pop = nextGeneration(pop, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size,
                              crossover_type,
                              crossover_prob, mutation_type, mutation_prob, seed, i)
+        pops.append(pop)
         routes.append(pop[rankRoutes(pop)[0][0]])
-        progress.append(1 / rankRoutes(pop)[0][1])
-        average.append(1 / averageRoute(pop))
+        progress.append(bestRoutes(pop))
+        average.append(averageRoute(pop))
 
     print("Final distance: " + str(1 / rankRoutes(pop)[0][1]))
     bestRouteIndex = rankRoutes(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
-    return bestRoute, progress, average, routes
+    return bestRoute, progress, average, routes, pops
