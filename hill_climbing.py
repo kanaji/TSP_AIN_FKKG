@@ -26,14 +26,19 @@ def cost_change_3opt(best, n1, n2, n3, temp):
 
 
 def two_opt(route):
-    best = route
+    first = route.copy()
+    best = route.copy()
     for i in range(1, len(route) - 2):
         for j in range(i + 1, len(route)):
-            if j - i == 1: continue
+            if j - i == 1:
+                continue
             if cost_change(best[i - 1], best[i], best[j - 1], best[j]) < 0:
                 best[i:j] = best[j - 1:i - 1:-1]
         route = best
-    return best
+    if ga.Fitness(first).routeDistance() > ga.Fitness(best).routeDistance():
+        return best
+    else:
+        return first
 
 
 def three_opt(route):

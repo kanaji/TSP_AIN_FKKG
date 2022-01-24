@@ -302,15 +302,18 @@ def mutatePopulation(population, mutation_type, mutationRate, elitesize, seed):
 
     if mutation_type == "2-swap":
         for ind in range(elitesize, len(population)):
-            mutatedInd = mutate_2_swap(population[ind], mutationRate, seed)
+            indi = population[ind].copy()
+            mutatedInd = mutate_2_swap(indi, mutationRate, seed)
             mutatedPop.append(mutatedInd)
     elif mutation_type == "Inversion":
         for ind in range(elitesize, len(population)):
-            mutatedInd = mutate_inversion(population[ind], mutationRate, seed)
+            indi = population[ind].copy()
+            mutatedInd = mutate_inversion(indi, mutationRate, seed)
             mutatedPop.append(mutatedInd)
     elif mutation_type == "last_but_not_least":
         for ind in range(elitesize, len(population)):
-            mutatedInd = mutate_last_but_not_least(population[ind], mutationRate, seed)
+            indi = population[ind].copy()
+            mutatedInd = mutate_last_but_not_least(indi, mutationRate, seed)
             mutatedPop.append(mutatedInd)
     return mutatedPop
 
@@ -329,20 +332,21 @@ def nextGeneration(currentGen, eliteSize, hillclimb_type, hillclimb_generation, 
 
 
 def hillClimbing(population, hillclimb_type, hillclimb_generation, current_gen):
+    pop = population.copy()
     if hillclimb_generation < ++current_gen:
-        sortedPop = population
+        sortedPop = population.copy()
         sortedPop.sort(key=lambda x: Fitness(x).routeFitness(), reverse=True)
         if hillclimb_type == '2-opt':
             best = hc.two_opt(sortedPop[0])
-            for route in population:
-                if sortedPop[0] == route:
+            for route in pop:
+                if sortedPop[0] == route and Fitness(route).routeDistance() > Fitness(best).routeDistance():
                     route = best
         if hillclimb_type == '3-opt':
             best = hc.three_opt(sortedPop[0])
             for route in population:
                 if sortedPop[0] == route:
                     route = best
-    return population
+    return pop
 
 
 def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type, hillclimb_generation, selection_type,
@@ -362,6 +366,8 @@ def geneticAlgorithm(population, popSize, generations, eliteSize, hillclimb_type
 
     average = []
     average.append(averageRoute(pop))
+
+    best = progress[0]
 
     for i in range(0, generations):
         pop = nextGeneration(pop, eliteSize, hillclimb_type, hillclimb_generation, selection_type, selection_size,
